@@ -8,7 +8,7 @@
 
 #import "PFFile+NSCoding.h"
 
-#define kPFFileName @"_name"'
+#define kPFFileName @"_name"
 #define kPFFileUrl @"_url"
 
 @implementation PFFile (NSCoding)
@@ -21,8 +21,8 @@
 
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
-	NSString* name  = [aDecoder decodeObjectForKey:kPFFileName];
-    NSString* url  = [aDecoder decodeObjectForKey:kPFFileUrl];
+	NSString* name = [aDecoder decodeObjectForKey:kPFFileName];
+    NSString* url = [aDecoder decodeObjectForKey:kPFFileUrl];
 	self = [super init];
 	if (self) {
 		[self setValue:name forKey:kPFFileName];

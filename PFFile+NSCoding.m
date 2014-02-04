@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 UpdateZen. All rights reserved.
 //
 
-#import "PFFile+Coding.h"
+#import "PFFile+NSCoding.h"
 #import "PFFile.h"
 
 #define kPFFileName @"_name"'

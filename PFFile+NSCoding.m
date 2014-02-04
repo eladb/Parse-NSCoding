@@ -7,7 +7,6 @@
 //
 
 #import "PFFile+NSCoding.h"
-#import "PFFile.h"
 
 #define kPFFileName @"_name"'
 #define kPFFileUrl @"_url"
@@ -29,7 +28,7 @@
 		[self setValue:name forKey:kPFFileName];
 		[self setValue:url forKey:kPFFileUrl];
 	}
-	return file;
+	return self;
 }
 
 @end

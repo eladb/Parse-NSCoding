@@ -1,7 +1,7 @@
 Parse-NSCoding
 ==============
 
-This library adds [NSCoding] support to subclasses of **PFObject** and **PFUser** so that they can be serialized (for custom caching, for example). **PFACL** and **PFFile** are also made serializable. However, currently only the **url** property of **PFFile** is serialized; the actual data is not.
+This library adds [NSCoding] support to subclasses of **PFObject** and **PFUser** so that they can be serialized (for [custom caching], for example). **PFACL** and **PFFile** are also made serializable. However, currently only the **url** property of **PFFile** is serialized; the actual data is not.
 
 ##Sample Usage
 
@@ -9,14 +9,43 @@ Just install this library in your project. That's it. No header files to import!
 
 ##Non-Parse Properties
 
-If your subclasses of **PFObject** or **PFUser** contain additional non-Parse properties (those not marked ```@dynamic```), those properties will **not** be serialized automatically. You will need to subclass **PFSerializableObject** or **PFSerializableUser**, override the two [NSCoding] methods, and add additional encoding statements for those properties:
+If your subclass of **PFObject** or **PFUser** contains additional non-Parse properties (those not marked ```@dynamic```), those properties will **not** be serialized automatically. You will need to subclass **PFSerializableObject** or **PFSerializableUser**, override the two [NSCoding] methods, and add additional encoding statements for those properties:
 
 ```
-#import "PFSerializableObject.h"
-or
-#import "PFSerializableUser.h"
+CustomObject.h
 
-...
+#import <Parse/Parse.h>
+#import <Parse/PFObject+Subclass.h>
+#import "PFSerializableObject.h"
+
+@interface CustomObject : PFSerializableObject <PFSubclassing>
+
+@property (nonatomic, strong) id parseProperty1;
+@property (nonatomic, strong) id parseProperty2;
+@property (nonatomic, strong) id nonParseProperty1;
+@property (nonatomic, strong) id nonParseProperty2;
+
++ (NSString*)parseClassName;
+
+@end
+```
+
+```
+CustomObject.m
+
+#import "CustomObject.h"
+
+@implementation CustomObject
+
+@dynamic parseProperty1;
+@dynamic parseProperty2;
+@synthesize nonParseProperty1;
+@synthesize nonParseProperty2;
+
++ (NSString*)parseClassName
+{
+	return @"CustomObject";
+}
 
 - (void)encodeWithCoder:(NSCoder*)encoder
 {
@@ -33,6 +62,8 @@ or
 	}
 	return self;
 }
+
+@end
 ```
 
 ##Installation
@@ -50,4 +81,5 @@ Much of the code in this library came from:
 https://parse.com/questions/persistent-store-of-pfobject-pffile
 
 [NSCoding]:https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Protocols/NSCoding_Protocol/Reference/Reference.html
+[custom caching]:https://github.com/martinrybak/PFCloud-Cache
 [Parse SDK]:https://parse.com/downloads/ios/parse-library/latest

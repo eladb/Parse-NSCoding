@@ -1,15 +1,15 @@
 Parse-NSCoding
 ==============
 
-This library adds [NSCoding] support to **PFObject**, **PFUser**, **PFACL**, and **PFFile** so that they can be serialized (for custom caching, for example).
+This library adds [NSCoding] support to subclasses of **PFObject** and **PFUser** so that they can be serialized (for custom caching, for example). **PFACL** and **PFFile** are also made serializable. However, currently only the **url** property of **PFFile** is serialized; the actual data is not.
 
 ##Sample Usage
 
-Just install this library in your project. That's it. No header files to import! The Objective-C runtime will automatically send NSCoding messages to your Parse objects, and the category methods in this library will be invoked.
+Just install this library in your project. That's it. No header files to import! The Objective-C runtime will automatically send [NSCoding] messages to your Parse objects when you attempt to serialize them, and the category methods in this library will be invoked.
 
 ##Non-Parse Properties
 
-If you use custom subclasses of **PFObject** or **PFUser** that contain additional non-Parse properties (not marked ```@dynamic```), those properties will **not** be automatically serialized using the categories above. You will need to subclass **PFSerializableObject** or **PFSerializableUser**, override the [NSCoding] methods, and append additional encoding statements for those properties:
+If your subclasses of **PFObject** or **PFUser** contain additional non-Parse properties (those not marked ```@dynamic```), those properties will **not** be serialized automatically. You will need to subclass **PFSerializableObject** or **PFSerializableUser**, override the two [NSCoding] methods, and add additional encoding statements for those properties:
 
 ```
 #import "PFSerializableObject.h"

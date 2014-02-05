@@ -68,7 +68,7 @@ CustomObject.m
 
 ##Installation
 
-Easiest installation is using CocoaPods to resolve all dependencies:
+Easiest installation is using CocoaPods:
 
 ```pod 'Parse+NSCoding', '~> 0.0.1'```
 

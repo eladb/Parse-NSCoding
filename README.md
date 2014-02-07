@@ -1,7 +1,7 @@
 Parse-NSCoding
 ==============
 
-This library adds [NSCoding] support to subclasses of **PFObject** and **PFUser** so that they can be serialized and deserialized (for [custom caching], for example). All properties will be serialized, including Parse properties (those marked ```@dynamic```), as well as non-Parse properties. This library also serializes the related **PFACL** and **PFFile** classes. If your **PFFile** object contains NSData (```isDataAvailable == YES```), that too will be serialized.
+This library adds [NSCoding] support to subclasses of **PFObject** and **PFUser** so that they can be serialized and deserialized (for [custom caching], for example). All properties will be serialized, including Parse properties (those marked ```@dynamic```), as well as non-Parse properties (those marked ```@synthesize```). This library also serializes the related **PFACL** and **PFFile** classes. If your **PFFile** object contains NSData (```isDataAvailable == YES```), that too will be serialized.
 
 ##Sample Usage
 

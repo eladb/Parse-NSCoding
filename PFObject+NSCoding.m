@@ -41,13 +41,9 @@
     NSString* objectId = [aDecoder decodeObjectForKey:kPFObjectObjectId];
 	NSArray* allKeys = [aDecoder decodeObjectForKey:kPFObjectAllKeys];
 	
-	//Can't use [super init] or [PFObject objectWithoutDataWithClassName:objectId:]
-	self = [[[self class] alloc] init];
+	self = [[self class] objectWithoutDataWithObjectId:objectId];
     if (self) {
 		
-		//Set the Parse objectId
-		self.objectId = objectId;
-        
 		//Deserialize each Parse property
 		for (NSString* key in allKeys) {
             id obj = [aDecoder decodeObjectForKey:key];

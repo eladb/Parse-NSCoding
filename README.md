@@ -11,7 +11,7 @@ Just install this library in your project. That's it. No header files to import!
 
 Easiest installation is using CocoaPods:
 
-```pod 'Parse+NSCoding', '~> 0.1.0'```
+```pod 'Parse+NSCoding', '~> 0.1.1'```
 
 Otherwise you must manually copy the .h and .m files from this repo. Obviously you must also have the [Parse SDK] installed. Enjoy!
 

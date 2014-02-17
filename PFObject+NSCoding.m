@@ -16,58 +16,88 @@
 
 - (void)encodeWithCoder:(NSCoder*)encoder
 {
-	//Serialize Parse objectId and Parse property list
+	//Serialize Parse objectId and non-nil Parse property list
 	//[self allKeys] returns only the @dynamic properties that have a value
 	[encoder encodeObject:[self objectId] forKey:kPFObjectObjectId];
 	[encoder encodeObject:[self allKeys] forKey:kPFObjectAllKeys];
 	
-	//Serialize each Parse property
+	//Serialize each non-nil Parse property
 	for (NSString* key in [self allKeys]) {
-        [encoder encodeObject:self[key] forKey:key];
-    }
+		id value = self[key];
+		[encoder encodeObject:value forKey:key];
+	}
     
 	//Serialize each non-Parse property
 	for (NSString* key in [self nonDynamicProperties]) {
 		id value = [self valueForKey:key];
-		if (value) {
-			[encoder encodeObject:value forKey:key];
-		}
+		[encoder encodeObject:value forKey:key];
     }
 }
 
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
-	//Serialize Parse objectId and Parse property list
+	//Deserialize Parse objectId and non-nil Parse property list
     NSString* objectId = [aDecoder decodeObjectForKey:kPFObjectObjectId];
 	NSArray* allKeys = [aDecoder decodeObjectForKey:kPFObjectAllKeys];
 	
+	//Recreate Parse object with objectId
 	self = [[self class] objectWithoutDataWithObjectId:objectId];
     if (self) {
 		
-		//Deserialize each Parse property
+		//Deserialize each non-nil Parse property
 		for (NSString* key in allKeys) {
             id obj = [aDecoder decodeObjectForKey:key];
-            if (obj) {
-                self[key] = obj;
-            }
-        }
+			self[key] = obj;
+		}
+		
+		//Deserialize each nil Parse property with NSNull
+		//This is to prevent an NSInternalConsistencyException when trying to access them in the future
+		for (NSString* key in [self dynamicProperties]) {
+			if (![allKeys containsObject:key]) {
+				self[key] = [NSNull null];
+			}
+		}
 		
 		//Deserialize each non-Parse property
 		NSArray* nonParsePropertes = [self nonDynamicProperties];
 		for (NSString* key in nonParsePropertes) {
             id obj = [aDecoder decodeObjectForKey:key];
-            if (obj) {
-				[self setValue:obj forKey:key];
-            }
+			[self setValue:obj forKey:key];
         }
     }
     return self;
 }
 
+//Returns all the dynamic properties of this object
+- (NSArray*)dynamicProperties
+{
+	NSDictionary* properties = [self propertiesDictionary];
+    NSMutableArray* output = [[NSMutableArray alloc] init];
+    for (id key in [properties allKeys]) {
+		if ([properties[key] rangeOfString:@"D"].location != NSNotFound) {
+			[output addObject:key];
+		}
+	}
+	return output;
+}
+
 //Returns all the non-dynamic properties of this object
 - (NSArray*)nonDynamicProperties
 {
+	NSDictionary* properties = [self propertiesDictionary];
     NSMutableArray* output = [[NSMutableArray alloc] init];
+    for (id key in [properties allKeys]) {
+		if ([properties[key] rangeOfString:@"D"].location == NSNotFound) {
+			[output addObject:key];
+		}
+	}
+	return output;
+}
+
+//Returns all the property names and attributes of this object
+- (NSDictionary*)propertiesDictionary
+{
+	NSMutableDictionary* output = [[NSMutableDictionary alloc] init];
     unsigned int outCount;
     objc_property_t* properties = class_copyPropertyList([self class], &outCount);
     
@@ -75,13 +105,11 @@
         objc_property_t property = properties[i];
         NSString* propertyNameString = [NSString stringWithUTF8String:property_getName(property)];
 		NSString* propertyAttributes = [NSString stringWithUTF8String:property_getAttributes(property)];
-		if ([propertyAttributes rangeOfString:@"D"].location == NSNotFound) {
-			[output addObject:propertyNameString];
-		}
+		output[propertyNameString] = propertyAttributes;
     }
     
     free(properties);
-    return output;
+    return [output copy];
 }
 
 @end

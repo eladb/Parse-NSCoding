@@ -65,6 +65,10 @@
 			[self setValue:obj forKey:key];
         }
     }
+	
+	//Mark PFObject as not dirty
+	[self->operationSetQueue removeAllObjects];
+	
     return self;
 }
 

@@ -7,7 +7,7 @@
 //
 
 #import "PFObject+NSCoding.h"
-#import <objc/runtime.h>
+#import "NSObject+Properties.h"
 
 @implementation PFObject (NSCoding)
 
@@ -22,7 +22,6 @@
 - (void)encodeWithCoder:(NSCoder*)encoder
 {
 	//Serialize Parse objectId and non-nil Parse property list
-	//[self allKeys] returns only the @dynamic properties that have a value
 	[encoder encodeObject:[self objectId] forKey:kPFObjectObjectId];
 	[encoder encodeObject:[self allKeys] forKey:kPFObjectAllKeys];
 	
@@ -30,17 +29,16 @@
 	[encoder encodeObject:self.createdAt forKey:kPFObjectCreatedAtKey];
 	[encoder encodeObject:self.updatedAt forKey:kPFObjectUpdatedAtKey];
 	
-	//Serialize each non-nil Parse property
+	//Serialize all non-nil Parse properties
+	//[self allKeys] returns only the @dynamic properties that are not nil
 	for (NSString* key in [self allKeys]) {
 		id value = self[key];
 		[encoder encodeObject:value forKey:key];
 	}
 	
-	//Serialize each non-Parse property
-	for (NSString* key in [self nonDynamicProperties]) {
-		id value = [self valueForKey:key];
-		[encoder encodeObject:value forKey:key];
-    }
+	//Serialize all non-Parse properties
+	NSDictionary* nonParseProperties = [self nonDynamicProperties];
+	[self encodeProperties:nonParseProperties withCoder:encoder];
 }
 
 - (id)initWithCoder:(NSCoder*)aDecoder
@@ -57,76 +55,31 @@
 		self.createdAt = [aDecoder decodeObjectForKey:kPFObjectCreatedAtKey];
 		self.updatedAt = [aDecoder decodeObjectForKey:kPFObjectUpdatedAtKey];
 		
-		//Deserialize each non-nil Parse property
+		//Deserialize all non-nil Parse properties
 		for (NSString* key in allKeys) {
             id obj = [aDecoder decodeObjectForKey:key];
 			self[key] = obj;
 		}
 		
-		//Deserialize each nil Parse property with NSNull
+		//Deserialize all nil Parse properties with NSNull
 		//This is to prevent an NSInternalConsistencyException when trying to access them in the future
-		for (NSString* key in [self dynamicProperties]) {
+		//Loop through all dynamic properties that aren't in [self allKeys]
+		NSDictionary* allParseProperties = [self dynamicProperties];
+		for (NSString* key in allParseProperties) {
 			if (![allKeys containsObject:key]) {
 				self[key] = [NSNull null];
 			}
 		}
 		
-		//Deserialize each non-Parse property
-		NSArray* nonParsePropertes = [self nonDynamicProperties];
-		for (NSString* key in nonParsePropertes) {
-            id obj = [aDecoder decodeObjectForKey:key];
-			[self setValue:obj forKey:key];
-        }
+		//Deserialize all non-Parse properties
+		NSDictionary* nonParseProperties = [self nonDynamicProperties];
+		[self decodeProperties:nonParseProperties withCoder:aDecoder];
     }
 	
 	//Mark PFObject as not dirty
 	[self->operationSetQueue removeAllObjects];
 	
     return self;
-}
-
-//Returns all the dynamic properties of this object
-- (NSArray*)dynamicProperties
-{
-	NSDictionary* properties = [self propertiesDictionary];
-    NSMutableArray* output = [[NSMutableArray alloc] init];
-    for (id key in [properties allKeys]) {
-		if ([properties[key] rangeOfString:@"D"].location != NSNotFound) {
-			[output addObject:key];
-		}
-	}
-	return output;
-}
-
-//Returns all the non-dynamic properties of this object
-- (NSArray*)nonDynamicProperties
-{
-	NSDictionary* properties = [self propertiesDictionary];
-    NSMutableArray* output = [[NSMutableArray alloc] init];
-    for (id key in [properties allKeys]) {
-		if ([properties[key] rangeOfString:@"D"].location == NSNotFound) {
-			[output addObject:key];
-		}
-	}
-	return output;
-}
-
-//Returns all the property names and attributes of this object
-- (NSDictionary*)propertiesDictionary
-{
-	NSMutableDictionary* output = [[NSMutableDictionary alloc] init];
-    unsigned int outCount;
-    objc_property_t* properties = class_copyPropertyList([self class], &outCount);
-    
-    for (int i = 0; i < outCount; i++) {
-        objc_property_t property = properties[i];
-        NSString* propertyNameString = [NSString stringWithUTF8String:property_getName(property)];
-		NSString* propertyAttributes = [NSString stringWithUTF8String:property_getAttributes(property)];
-		output[propertyNameString] = propertyAttributes;
-    }
-    
-    free(properties);
-    return [output copy];
 }
 
 @end

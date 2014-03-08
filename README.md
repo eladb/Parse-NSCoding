@@ -11,7 +11,7 @@ Just install this library in your project. That's it. No header files to import!
 
 Easiest installation is using CocoaPods:
 
-```pod 'Parse+NSCoding', '~> 0.1.2'```
+```pod 'Parse+NSCoding', '~> 0.1.3'```
 
 Otherwise you must manually copy the .h and .m files from this repo. Obviously you must also have the [Parse SDK] installed. Enjoy!
 
@@ -20,6 +20,8 @@ Otherwise you must manually copy the .h and .m files from this repo. Obviously y
 Much of the code in this library came from:
 
 https://parse.com/questions/persistent-store-of-pfobject-pffile
+
+https://github.com/greenisus/NSObject-NSCoding
 
 [NSCoding]:https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Protocols/NSCoding_Protocol/Reference/Reference.html
 [custom caching]:https://github.com/martinrybak/PFCloud-Cache

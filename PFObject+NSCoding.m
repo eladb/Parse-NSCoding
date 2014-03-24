@@ -16,13 +16,15 @@
 
 #define kPFObjectObjectId @"___PFObjectId"
 #define kPFObjectAllKeys @"___PFObjectAllKeys"
+#define kPFObjectClassName @"___PFObjectClassName"
 #define kPFObjectCreatedAtKey @"___PFObjectCreatedAt"
 #define kPFObjectUpdatedAtKey @"___PFObjectUpdatedAt"
 
 - (void)encodeWithCoder:(NSCoder*)encoder
 {
-	//Serialize Parse objectId and non-nil Parse property list
+	//Serialize Parse objectId, class name, and non-nil Parse property list
 	[encoder encodeObject:[self objectId] forKey:kPFObjectObjectId];
+	[encoder encodeObject:[self parseClassName] forKey:kPFObjectClassName];
 	[encoder encodeObject:[self allKeys] forKey:kPFObjectAllKeys];
 	
 	//Serialize Parse timestamps
@@ -43,13 +45,21 @@
 
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
-	//Deserialize Parse objectId and non-nil Parse property list
+	//Deserialize Parse objectId, class name, and non-nil Parse property list
     NSString* objectId = [aDecoder decodeObjectForKey:kPFObjectObjectId];
+	NSString* parseClassName = [aDecoder decodeObjectForKey:kPFObjectClassName];
 	NSArray* allKeys = [aDecoder decodeObjectForKey:kPFObjectAllKeys];
 	
-	//Recreate Parse object with objectId
-	self = [[self class] objectWithoutDataWithObjectId:objectId];
-    if (self) {
+	if ([self isMemberOfClass:[PFObject class]]) {
+		//If this is a PFObject, recreate the object using the Parse class name and objectId
+		self = [PFObject objectWithoutDataWithClassName:parseClassName objectId:objectId];
+	}
+	else {
+		//If this is a PFObject subclass, recreate the object using PFSubclassing
+		self = [[self class] objectWithoutDataWithObjectId:objectId];
+	}
+	
+	if (self) {
 		
 		//Deserialize Parse timestamps
 		self.createdAt = [aDecoder decodeObjectForKey:kPFObjectCreatedAtKey];

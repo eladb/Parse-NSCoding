@@ -89,6 +89,9 @@
 	//Mark PFObject as not dirty
 	[self->operationSetQueue removeAllObjects];
 	
+	//Mark PFObject as having been fetched so self.isDataAvailable = YES
+	[self setValue:@(YES) forKey:kPFObjectHasBeenFetchedKey];
+	
     return self;
 }
 

@@ -19,6 +19,7 @@
 #define kPFObjectClassName @"___PFObjectClassName"
 #define kPFObjectCreatedAtKey @"___PFObjectCreatedAt"
 #define kPFObjectUpdatedAtKey @"___PFObjectUpdatedAt"
+#define kPFObjectIsDataAvailableKey @"hasBeenFetched"
 
 - (void)encodeWithCoder:(NSCoder*)encoder
 {
@@ -26,6 +27,7 @@
 	[encoder encodeObject:[self objectId] forKey:kPFObjectObjectId];
 	[encoder encodeObject:[self parseClassName] forKey:kPFObjectClassName];
 	[encoder encodeObject:[self allKeys] forKey:kPFObjectAllKeys];
+	[encoder encodeBool:[self isDataAvailable] forKey:kPFObjectIsDataAvailableKey];
 	
 	//Serialize Parse timestamps
 	[encoder encodeObject:self.createdAt forKey:kPFObjectCreatedAtKey];
@@ -49,6 +51,7 @@
     NSString* objectId = [aDecoder decodeObjectForKey:kPFObjectObjectId];
 	NSString* parseClassName = [aDecoder decodeObjectForKey:kPFObjectClassName];
 	NSArray* allKeys = [aDecoder decodeObjectForKey:kPFObjectAllKeys];
+	BOOL isDataAvailable = [aDecoder decodeBoolForKey:kPFObjectIsDataAvailableKey];
 	
 	if ([self isMemberOfClass:[PFObject class]]) {
 		//If this is a PFObject, recreate the object using the Parse class name and objectId
@@ -90,7 +93,7 @@
 	[self->operationSetQueue removeAllObjects];
 	
 	//Mark PFObject as having been fetched so self.isDataAvailable = YES
-	[self setValue:@(YES) forKey:kPFObjectHasBeenFetchedKey];
+	[self setValue:@(isDataAvailable) forKey:kPFObjectIsDataAvailableKey];
 	
     return self;
 }

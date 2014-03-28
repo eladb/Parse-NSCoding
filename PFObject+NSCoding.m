@@ -23,7 +23,7 @@
 
 - (void)encodeWithCoder:(NSCoder*)encoder
 {
-	//Serialize Parse objectId, class name, and non-nil Parse property list
+	//Serialize Parse-specific values
 	[encoder encodeObject:[self objectId] forKey:kPFObjectObjectId];
 	[encoder encodeObject:[self parseClassName] forKey:kPFObjectClassName];
 	[encoder encodeObject:[self allKeys] forKey:kPFObjectAllKeys];
@@ -47,7 +47,7 @@
 
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
-	//Deserialize Parse objectId, class name, and non-nil Parse property list
+	//Deserialize Parse-specific values
     NSString* objectId = [aDecoder decodeObjectForKey:kPFObjectObjectId];
 	NSString* parseClassName = [aDecoder decodeObjectForKey:kPFObjectClassName];
 	NSArray* allKeys = [aDecoder decodeObjectForKey:kPFObjectAllKeys];
@@ -92,7 +92,7 @@
 	//Mark PFObject as not dirty
 	[self->operationSetQueue removeAllObjects];
 	
-	//Mark PFObject as having been fetched so self.isDataAvailable = YES
+	//Mark PFObject with same hasBeenFetched value as before encoding
 	[self setValue:@(isDataAvailable) forKey:kPFObjectIsDataAvailableKey];
 	
     return self;

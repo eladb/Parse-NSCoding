@@ -1,7 +1,7 @@
 Parse-NSCoding
 ==============
 
-This library adds [NSCoding] support to subclasses of **PFObject** and **PFUser** so that they can be serialized and deserialized (for [custom caching], for example). All properties will be serialized, including Parse properties (those marked ```@dynamic```), as well as non-Parse properties (those marked ```@synthesize```). This library also serializes the related **PFACL** and **PFFile** classes. If your **PFFile** object contains NSData (```isDataAvailable == YES```), that too will be serialized.
+This library adds [NSCoding] support to instances or subclasses of **PFObject** and **PFUser** so that they can be serialized and deserialized (for [custom caching], for example). All properties will be serialized, including Parse properties (those marked ```@dynamic```), as well as non-Parse properties (those marked ```@synthesize```). This library also serializes the related **PFACL** and **PFFile** classes. If your **PFFile** object contains NSData (```isDataAvailable == YES```), that too will be serialized.
 
 ##Sample Usage
 
@@ -11,7 +11,7 @@ Just install this library in your project. That's it. No header files to import!
 
 Easiest installation is using CocoaPods:
 
-```pod 'Parse+NSCoding', '~> 0.1.3'```
+```pod 'Parse+NSCoding', '~> 0.1.4'```
 
 Otherwise you must manually copy the .h and .m files from this repo. Obviously you must also have the [Parse SDK] installed. Enjoy!
 

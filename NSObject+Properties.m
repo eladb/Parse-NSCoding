@@ -96,7 +96,7 @@
             case 'i':   // int
                 [invocation invoke];
                 [invocation getReturnValue:&intValue];
-                [coder encodeObject:[NSNumber numberWithInt:intValue] forKey:key];
+                [coder encodeObject:[NSNumber numberWithInteger:intValue] forKey:key];
                 break;
             case 'L':   // unsigned long
                 [invocation invoke];

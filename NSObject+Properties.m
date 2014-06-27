@@ -35,7 +35,8 @@
 	NSDictionary* properties = [self properties];
 	for (NSString* key in properties) {
 		NSArray* attributes = properties[key][@"attributes"];
-		if (![attributes containsObject:@"D"]) {
+    // Don't include read-only properties since these can't be restored anyway. 
+		if (![attributes containsObject:@"D"] && ![attributes containsObject:@"R"]) {
 			output[key] = properties[key];
 		}
 	}

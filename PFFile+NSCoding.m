@@ -12,8 +12,6 @@
 #define kPFFileName @"_name"
 #define kPFFileURL @"_url"
 #define kPFFileData @"data"
-#define kPFFileState @"state"
-#define kPFFilePreviousState @"previousState"
 
 @implementation PFFile (NSCoding)
 
@@ -21,8 +19,6 @@
 {
 	[encoder encodeObject:self.name forKey:kPFFileName];
   [encoder encodeObject:self.url forKey:kPFFileURL];
-  [encoder encodeObject:[self valueForKey:kPFFileState] forKey:kPFFileState];
-  [encoder encodeObject:[self valueForKey:kPFFilePreviousState] forKey:kPFFilePreviousState];
 	if (self.isDataAvailable) {
 		[encoder encodeObject:[self getData] forKey:kPFFileData];
 	}
@@ -37,8 +33,6 @@
 	self = [PFFile fileWithName:name data:data];
 	if (self) {
     [self setValue:url forKey:kPFFileURL];
-    [self setValue:[aDecoder decodeObjectForKey:kPFFileState] forKey:kPFFileState];
-    [self setValue:[aDecoder decodeObjectForKey:kPFFilePreviousState] forKey:kPFFilePreviousState];
 	}
 	return self;
 }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Parse+NSCoding"
-  s.version      = "0.1.4"
+  s.version      = "0.1.5"
   s.summary      = "iOS library for serializing Parse objects "
   s.homepage     = "https://github.com/martinrybak/Parse-NSCoding"
   s.license      = { :type => 'MIT' }

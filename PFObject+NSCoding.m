@@ -53,7 +53,7 @@
 	NSArray* allKeys = [aDecoder decodeObjectForKey:kPFObjectAllKeys];
 	BOOL isDataAvailable = [aDecoder decodeBoolForKey:kPFObjectIsDataAvailableKey];
 	
-	if ([self isMemberOfClass:[PFObject class]]) {
+	if ([self isKindOfClass:[PFObject class]]) {
 		//If this is a PFObject, recreate the object using the Parse class name and objectId
 		self = [PFObject objectWithoutDataWithClassName:parseClassName objectId:objectId];
 	}

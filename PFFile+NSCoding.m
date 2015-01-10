@@ -30,9 +30,15 @@
     NSString* url = [aDecoder decodeObjectForKey:kPFFileURL];
 	NSData* data = [aDecoder decodeObjectForKey:kPFFileData];
 	
-	self = [PFFile fileWithName:name data:data];
+    if (data) {
+        self = [PFFile fileWithName:name data:data];
+    } else {
+        self = [PFFile new];
+        [self setValue:name forKey:kPFFileName];
+        [self setValue:url forKey:kPFFileURL];
+    }
 	if (self) {
-        [self setValue:url forKey:@"_url"];
+        [self setValue:url forKey:kPFFileURL];
 	}
 	return self;
 }

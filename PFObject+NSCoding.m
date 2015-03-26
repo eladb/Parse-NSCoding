@@ -71,7 +71,9 @@
 		//Deserialize all non-nil Parse properties
 		for (NSString* key in allKeys) {
             id obj = [aDecoder decodeObjectForKey:key];
-			self[key] = obj;
+            if (obj) {
+                self[key] = obj;
+            }
 		}
 		
 		//Deserialize all nil Parse properties with NSNull

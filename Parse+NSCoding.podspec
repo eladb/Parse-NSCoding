@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Parse+NSCoding"
-  s.version      = "0.1.5"
+  s.version      = "0.1.6"
   s.summary      = "iOS library for serializing Parse objects "
   s.homepage     = "https://github.com/martinrybak/Parse-NSCoding"
   s.license      = { :type => 'MIT' }
@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.source_files = '*.{h,m}'
   s.requires_arc = true
-  s.dependency 'Parse', '~> 1.6.0'
+  s.dependency 'Parse', '~> 1.7.0'
   s.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '"${PODS_ROOT}/Parse"' }
 end
